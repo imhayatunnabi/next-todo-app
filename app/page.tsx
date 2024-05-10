@@ -1,8 +1,8 @@
 
 export default function Home() {
   return (
-    <main>
-      <h1>Next 13 Todo App</h1>
+    <main className="max-w-4xl">
+      
     </main>
   );
 }
