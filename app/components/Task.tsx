@@ -1,9 +1,11 @@
 "use client"
 import { ITask } from '@/model/tasks'
-import React, { useState } from 'react'
+import React, { FormEventHandler, useState } from 'react'
 import { MdDelete } from 'react-icons/md'
 import { FiEdit } from 'react-icons/fi'
 import Modal from './Modal'
+import { useRouter } from 'next/navigation'
+import { updateTodo } from '@/api'
 interface TaskProps {
     task: ITask
 }
@@ -11,21 +13,31 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     const [openEditModal, setOpenEditModal] = useState<boolean>(false);
     const [openDeleteModal, setDeleteModal] = useState<boolean>(false);
     const [taskToEdit, setTaskToEdit] = useState<string>(task.text);
-    const handleSubmit = () =>{};
+    const router = useRouter();
+    const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+        e.preventDefault();
+        await updateTodo({
+            id: task.id,
+            text: taskToEdit,
+        });
+        setTaskToEdit('');
+        setOpenEditModal(false);
+        router.refresh();
+    };
     return (
         <tr key={task.id}>
             <td>{task.text}</td>
             <td>
                 <div className="flex gap-2">
-                    <button className='btn btn-success'><FiEdit size={18}></FiEdit></button>
-                    <Modal modalOpen={openEditModal} setOpenEditModal={setOpenEditModal}>
+                    <button className='btn btn-success' onClick={() => setOpenEditModal(true)}><FiEdit size={18}></FiEdit></button>
+                    <Modal modalOpen={openEditModal} setModalOpen={setOpenEditModal}>
                         <form onSubmit={handleSubmit}>
-                            <h3 className="font-bold text-large">Add New Task</h3>
+                            <h3 className="font-bold text-large">Update Task</h3>
                             <div className="modal-action">
                                 <input type="text" placeholder="Type here" className="input input-bordered w-full max-w-full" value={taskToEdit}
                                     onChange={(e) => setTaskToEdit(e.target.value)}
                                 />
-                                <button type="submit" className="btn">Submit</button>
+                                <button type="submit" className="btn">Update</button>
                             </div>
                         </form>
                     </Modal>
