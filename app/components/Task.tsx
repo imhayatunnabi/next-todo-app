@@ -5,7 +5,7 @@ import { MdDelete } from 'react-icons/md'
 import { FiEdit } from 'react-icons/fi'
 import Modal from './Modal'
 import { useRouter } from 'next/navigation'
-import { updateTodo } from '@/api'
+import { deleteTodo, updateTodo } from '@/api'
 interface TaskProps {
     task: ITask
 }
@@ -22,6 +22,11 @@ const Task: React.FC<TaskProps> = ({ task }) => {
         });
         setTaskToEdit('');
         setOpenEditModal(false);
+        router.refresh();
+    };
+    const handleDelete = async (id: string) => {
+        await deleteTodo(id);
+        setDeleteModal(false);
         router.refresh();
     };
     return (
@@ -41,7 +46,13 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                             </div>
                         </form>
                     </Modal>
-                    <button className='btn btn-error'> <MdDelete size={18}></MdDelete> </button>
+                    <button className='btn btn-error' onClick={() => setDeleteModal(true)}> <MdDelete size={18}></MdDelete> </button>
+                    <Modal modalOpen={openDeleteModal} setModalOpen={setDeleteModal}>
+                        <h3 className="font-bold text-large">Are you sure to delete the task ?</h3>
+                        <div className="modal-action">
+                            <button type="button" className="btn btn-error" onClick={() => handleDelete(task.id)} >Delete</button>
+                        </div>
+                    </Modal>
                 </div>
             </td>
         </tr>
