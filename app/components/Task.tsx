@@ -58,5 +58,4 @@ const Task: React.FC<TaskProps> = ({ task }) => {
         </tr>
     )
 }
-
 export default Task
